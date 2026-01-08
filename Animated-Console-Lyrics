@@ -1,0 +1,67 @@
+# Animated-Console-Lyrics
+C++ program displaying song lyrics word by word with color effects and timed delays.
+
+#include <iostream>
+#include <string>
+#include <thread>
+#include <chrono>
+#include <windows.h>
+#include <vector>
+using namespace std;
+//ANSI escase codes for colors
+vector <string> colors = {
+    "\033[36m","\033[33m","\033[35m","\033[32m",
+    "\033[34m","\033[31m","\033[96m","\033[95m",
+    "\033[92m","\033[93m","\033[94m","\033[37m"
+};
+//Print one line, word by word with color change
+void printline(const string& text, double delay) {
+    int ColorIndex = 0;
+    //Announcing ringed loop was for
+    for (char dar : text) {
+        if (dar == ' ') {
+            cout << " ";
+            ColorIndex = (ColorIndex + 1) % colors.size();
+            continue;
+        }
+        cout << colors[ColorIndex] << dar << "\033[0m" << flush;
+        this_thread::sleep_for(chrono::duration<double>(delay));
+    }
+    cout << "\033[0m" << endl;
+}
+
+//line structure
+struct Line {
+    string text;
+    double delay;
+    int pauseAfter;
+};
+
+int main() {
+    SetConsoleOutputCP(CP_UTF8);
+
+    cout << "🎵 Now playing: 'Blue Bird' - Naruto Shippuden OP3 🎵\n\n";
+
+    //Announcing lines to print
+    vector <Line> lines = {
+        {"Futari utsureba", 0.16 , 3500},
+        {"Stay with me", 0.16 , 1400 },
+        {"Mayonaka no doa o" , 0.14 , 50 },
+        {"Tataki" , 0.13 , 1700 },
+        {"Kaerunai de to", 0.17 , 200 },
+        {"Nai ta", 0.15 , 3400 },
+        {"Ano ki setsu ga", 0.17 , 600 },
+        {"Ima me no mae", 0.17 , 600 },
+        {"Stay with me.._" , 0.11 , 2500}
+    };
+    
+    //Announcing rinnged based loop was for
+    for (const auto& ln : lines) {
+        printline(ln.text, ln.delay);
+        this_thread::sleep_for(chrono::milliseconds(ln.pauseAfter));
+    }
+
+    cout << "End of song. Thank you for listening!" << endl;
+
+    return 0;
+}
